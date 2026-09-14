@@ -126,10 +126,9 @@
 
   @media (max-width:880px){
     .navlinks{display:none}
-    /* mobile header: centered brand, drop the redundant CTA */
-    .nav{justify-content:center; height:62px}
+    /* mobile header: left-aligned brand lockup (P + wordmark together), drop the redundant CTA */
+    .nav{justify-content:flex-start; height:62px}
     .nav .btn-mint{display:none}
-    .brand{margin-right:0}
 
     /* mobile hero: left-aligned copy, CTA buttons above the fold, phone as visual below */
     .hero{padding:38px 0 34px}
@@ -142,7 +141,7 @@
     .hero .get{order:5; align-items:center; margin-top:24px}
     .hero .get-row{justify-content:center}
     .hero .free-note{order:6; text-align:center; margin:14px 0 0}
-    .hero .phone{order:7; align-self:center; width:218px; margin:18px 0 4px}
+    .hero .phone{order:7; align-self:center; width:218px; margin:26px 0 4px}
     .steps{grid-template-columns:1fr}
     .feature,.feature.rev{grid-template-columns:1fr; gap:26px; text-align:center}
     .feature.rev .phone,.feature .phone{order:0}
