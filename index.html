@@ -131,18 +131,18 @@
     .nav .btn-mint{display:none}
     .brand{margin-right:0}
 
-    /* mobile hero: left-aligned copy, phone between copy and buttons, roomy */
-    .hero{padding:40px 0 30px}
-    .hero-grid{display:flex; flex-direction:column; text-align:left; gap:0}
+    /* mobile hero: left-aligned copy, CTA buttons above the fold, phone as visual below */
+    .hero{padding:38px 0 34px}
+    .hero-grid{display:flex; flex-direction:column; align-items:flex-start; text-align:left; gap:0}
     .hero-grid > div:first-child{display:contents}
-    .wm{order:1; width:min(300px,82%); margin:0 0 4px}
-    .tagline{order:2; margin:16px 0 0}
-    .lead{order:3; margin:16px 0 0; max-width:42ch}
+    .wm{order:1; width:min(268px,74%); margin:0 0 4px}
+    .tagline{order:2; margin:30px 0 0}
+    .lead{order:3; margin:18px 0 0; max-width:42ch}
     .beats{order:4; margin:22px 0 0; justify-content:flex-start}
-    .hero .phone{order:5; align-self:center; width:242px; margin:30px 0 4px}
-    .hero .get{order:6; align-items:center; margin-top:20px}
-    .hero .get-row{justify-content:center}
-    .hero .free-note{order:7; text-align:center; margin:14px 0 0}
+    .hero .get{order:5; align-items:flex-start; margin-top:24px}
+    .hero .get-row{justify-content:flex-start}
+    .hero .free-note{order:6; text-align:left; margin:14px 0 0}
+    .hero .phone{order:7; align-self:center; width:218px; margin:34px 0 4px}
     .steps{grid-template-columns:1fr}
     .feature,.feature.rev{grid-template-columns:1fr; gap:26px; text-align:center}
     .feature.rev .phone,.feature .phone{order:0}
