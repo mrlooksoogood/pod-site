@@ -242,7 +242,7 @@
 <footer>
   <div class="wrap foot">
     <div><a class="brand" href="#top"><img src="pmark.png" alt=""><span>Paparazzi On Demand</span></a><div class="small">Capture the moment.<br>&copy; <span id="yr"></span> Paparazzi On Demand</div></div>
-    <nav><a href="#" data-legal="Privacy">Privacy</a><a href="#" data-legal="Terms">Terms</a><a href="mailto:support@paparazzionondemand.com">Support</a><a href="mailto:hello@paparazzionondemand.com">hello@paparazzionondemand.com</a></nav>
+    <nav><a href="#" data-legal="Privacy">Privacy</a><a href="#" data-legal="Terms">Terms</a><a href="mailto:support@paparazziondemand.com">Support</a><a href="mailto:hello@paparazziondemand.com">hello@paparazziondemand.com</a></nav>
   </div>
 </footer>
 
@@ -256,7 +256,7 @@
   document.querySelectorAll(isAndroid?"a.cta-android":"a.cta-ios").forEach(function(a){a.classList.add("on");});
 
   try{ var ref=new URLSearchParams(location.search).get("ref"); if(ref){ localStorage.setItem("pod_ref", ref.slice(0,64)); } }catch(e){}
-  try{ var target=(location.protocol.indexOf("http")===0)?location.href:"https://paparazzionondemand.com/"; new QRCode(document.getElementById("qr"),{text:target,width:104,height:104,colorDark:"#020806",colorLight:"#F2FBF7",correctLevel:QRCode.CorrectLevel.M}); }catch(e){}
+  try{ var target=(location.protocol.indexOf("http")===0)?location.href:"https://paparazziondemand.com/"; new QRCode(document.getElementById("qr"),{text:target,width:104,height:104,colorDark:"#020806",colorLight:"#F2FBF7",correctLevel:QRCode.CorrectLevel.M}); }catch(e){}
   document.getElementById("yr").textContent=new Date().getFullYear();
   document.querySelectorAll("[data-legal]").forEach(function(a){a.addEventListener("click",function(ev){ev.preventDefault();alert("The "+a.dataset.legal+" page goes live with the app-store submission.");});});
 </script>
