@@ -1,0 +1,262 @@
+<meta charset="utf-8">
+<title>Paparazzi On Demand</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
+<style>
+  :root{
+    --ink:#020806; --night:#06100E; --night2:#091713; --panel:#0D1D18; --panel2:#122720;
+    --glass:rgba(9,24,20,0.9); --line:rgba(210,255,237,0.13); --lineB:rgba(77,245,192,0.36);
+    --mint:#24E6AE; --mintG1:#20E8B0; --mintG2:#00B888; --mintSoft:rgba(36,230,174,.1);
+    --bone:#F2FBF7; --muted:#9AB1AA; --dim:#83998F; --onMint:#020806;
+    --mapimg:url('map.jpg'); --mapop:.2;
+  }
+  :root[data-theme="light"]{
+    --ink:#E7ECE9; --night:#DFE5E1; --night2:#D9E0DB; --panel:#FFFFFF; --panel2:#F1F5F2;
+    --glass:rgba(255,255,255,0.92); --line:rgba(14,34,26,0.13); --lineB:rgba(6,150,110,0.42);
+    --mint:#08A074; --mintG1:#12BE8C; --mintG2:#009670; --mintSoft:rgba(8,160,116,.1);
+    --bone:#0F1A15; --muted:#333F39; --dim:#5A6961; --onMint:#04241A;
+    --mapimg:url('map-light.jpg'); --mapop:.3;
+  }
+  :root{--display:'Space Grotesk',system-ui,sans-serif; --impact:'Anton',var(--display); --mono:'Space Mono',ui-monospace,monospace; --body:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; --maxw:1140px}
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--ink); color:var(--bone); font-family:var(--body); font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased; overflow-x:hidden; transition:background .3s ease,color .3s ease}
+  a{color:inherit; text-decoration:none}
+  img{max-width:100%; display:block}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px}
+  .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--mint)}
+  :focus-visible{outline:2px solid var(--mint); outline-offset:3px; border-radius:6px}
+
+  header{position:sticky; top:0; z-index:50; backdrop-filter:blur(14px); background:color-mix(in srgb, var(--ink) 86%, transparent); border-bottom:1px solid var(--line)}
+  .nav{display:flex; align-items:center; gap:20px; height:70px}
+  .brand{display:flex; align-items:center; gap:11px; font-family:var(--display); font-weight:700; letter-spacing:-.01em; font-size:16px; margin-right:auto}
+  .brand img{height:34px; width:auto; filter:drop-shadow(0 4px 14px rgba(0,184,136,.35))}
+  .navlinks{display:flex; gap:24px; font-size:14px; color:var(--muted)}
+  .navlinks a:hover{color:var(--mint)}
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; font-family:var(--display); font-weight:600; font-size:14px; padding:11px 20px; border-radius:12px; cursor:pointer; border:1px solid transparent; transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease}
+  .btn-mint{background:linear-gradient(135deg,var(--mintG1),var(--mintG2)); color:var(--onMint); box-shadow:0 10px 28px rgba(0,184,136,.26)}
+  .btn-mint:hover{transform:translateY(-2px); box-shadow:0 16px 38px rgba(0,184,136,.4)}
+  .btn-ghost{background:transparent; color:var(--bone); border:1px solid var(--lineB)}
+  .btn-ghost:hover{background:var(--mintSoft); transform:translateY(-2px)}
+
+  /* premium install buttons (real platform marks) */
+  .get{display:flex; flex-direction:column; gap:12px}
+  .get-label{font-family:var(--mono); font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--dim)}
+  .get-row{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+  .pbtn{display:inline-flex; align-items:center; gap:10px; font-family:var(--display); font-weight:600; font-size:15px; letter-spacing:.01em; padding:12px 24px; border-radius:14px; cursor:pointer; border:1px solid var(--lineB); background:color-mix(in srgb, var(--bone) 5%, transparent); color:var(--bone); transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease}
+  .pbtn svg{width:19px; height:19px; fill:currentColor; flex:none}
+  .pbtn:hover{transform:translateY(-2px); border-color:var(--mint)}
+  .pbtn.on{background:linear-gradient(135deg,var(--mintG1),var(--mintG2)); color:var(--onMint); border-color:transparent; box-shadow:0 12px 30px rgba(0,184,136,.3)}
+  .scanhint{font-family:var(--mono); font-size:10.5px; letter-spacing:.05em; color:var(--dim); line-height:1.55}
+  .qr-wrap{display:flex; align-items:center; gap:12px}
+  .qr-tile{background:#F2FBF7; border-radius:12px; padding:8px; width:92px; height:92px; display:grid; place-items:center; flex:none}
+  .qr-tile canvas,.qr-tile img{width:76px!important; height:76px!important; display:block}
+  .beats{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--mint); margin:0 0 22px; display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+  .beats .d{width:4px; height:4px; border-radius:50%; background:var(--mint); opacity:.6}
+  .free-note{font-family:var(--mono); font-size:11px; letter-spacing:.04em; color:var(--dim); margin-top:16px}
+  .free-note b{color:var(--muted); font-weight:400}
+
+  .hero{position:relative; padding:58px 0 34px; overflow:hidden}
+  .hero-bg{position:absolute; inset:-10% -20% auto -20%; height:760px; z-index:0; opacity:var(--mapop); pointer-events:none; background:var(--mapimg) center top / cover no-repeat; mask:radial-gradient(70% 60% at 60% 20%, #000 30%, transparent 72%); -webkit-mask:radial-gradient(70% 60% at 60% 20%, #000 30%, transparent 72%)}
+  .hero-grid{position:relative; z-index:2; display:grid; grid-template-columns:1.12fr .88fr; gap:44px; align-items:center}
+  .wm{width:clamp(300px,42vw,470px); height:auto; margin:0 0 12px; filter:drop-shadow(0 10px 30px rgba(0,184,136,.22))}
+  .wm-light{display:none}
+  :root[data-theme="light"] .wm-dark{display:none}
+  :root[data-theme="light"] .wm-light{display:block}
+  .tagline{font-family:var(--impact); text-transform:uppercase; font-size:clamp(29px,4.2vw,50px); line-height:1; letter-spacing:.01em; margin:16px 0 0; color:var(--bone)}
+  .lead{font-size:18px; line-height:1.58; color:var(--muted); max-width:40ch; margin:18px 0 24px}
+  .lead b{color:var(--bone); font-weight:600}
+
+  /* premium phone: dark metallic body (bezel) with the screen inset inside it */
+  .phone{justify-self:center; width:266px; border-radius:48px; padding:10px; background:linear-gradient(150deg,#2a2a2f 0%,#0a0a0c 55%,#050506 100%); box-shadow:0 46px 100px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.07),inset 0 1px 0 rgba(255,255,255,.14),inset 0 -1px 2px rgba(0,0,0,.6),0 0 64px rgba(36,230,174,.06); position:relative}
+  .phone::after{content:""; position:absolute; right:-2.5px; top:23%; width:3px; height:62px; border-radius:2px; background:linear-gradient(#45454f,#141417)}
+  .scr{width:100%; aspect-ratio:518/1120; border-radius:39px; overflow:hidden; background:#000; position:relative}
+  .scr img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top center}
+  .s-light{display:none}
+  :root[data-screens="light"] .s-dark{display:none}
+  :root[data-screens="light"] .s-light{display:block}
+
+  .trust{border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:var(--night2)}
+  .trust .wrap{display:flex; flex-wrap:wrap; gap:12px 34px; padding:18px 24px; font-family:var(--mono); font-size:11.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--dim); align-items:center}
+  .trust b{color:var(--mint); font-weight:400}
+
+  section.block{padding:80px 0}
+  .sec-head{max-width:56ch}
+  .sec-head h2{font-family:var(--display); font-weight:700; letter-spacing:-.03em; font-size:clamp(28px,4vw,44px); line-height:1.05; margin:14px 0 0; text-wrap:balance}
+  .sec-head p{color:var(--muted); font-size:17px; margin:16px 0 0; max-width:52ch}
+
+  .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:44px}
+  .step{background:var(--panel); border:1px solid var(--line); border-radius:22px; padding:26px}
+  .step .n{font-family:var(--impact); font-size:15px; color:var(--onMint); background:var(--mint); width:34px; height:34px; border-radius:10px; display:grid; place-items:center}
+  .step h3{font-family:var(--display); font-weight:600; font-size:20px; letter-spacing:-.01em; margin:18px 0 8px}
+  .step p{color:var(--muted); font-size:15px; margin:0}
+
+  .flip{background:radial-gradient(80% 130% at 50% 0%, var(--mintSoft), transparent 60%); border-top:1px solid var(--line); border-bottom:1px solid var(--line); text-align:center}
+  .flip h2{font-family:var(--impact); text-transform:uppercase; font-size:clamp(34px,5.4vw,66px); line-height:1.1; margin:0; text-wrap:balance}
+  .flip p{color:var(--muted); font-size:18px; margin:16px auto 0; max-width:46ch}
+
+  .feature{display:grid; grid-template-columns:1fr .82fr; gap:52px; align-items:center}
+  .feature.rev{grid-template-columns:.82fr 1fr}
+  .feature.rev .phone{order:-1}
+  .figures{display:flex; gap:34px; margin-top:26px; flex-wrap:wrap}
+  .fig .num{font-family:var(--impact); font-size:clamp(42px,6vw,60px); line-height:1; color:var(--mint)}
+  .fig .lab{font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); margin-top:8px; max-width:17ch}
+  .feature .phone{width:236px}
+
+  .shop-band{display:flex; align-items:center; justify-content:space-between; gap:30px; flex-wrap:wrap; background:var(--panel2); border:1px solid var(--line); border-radius:26px; padding:34px}
+  .final{text-align:center; padding:88px 0}
+  .final h2{font-family:var(--impact); text-transform:uppercase; font-size:clamp(40px,6.4vw,80px); line-height:.94; margin:0 auto 10px; max-width:15ch}
+  .final .get{align-items:center; margin-top:24px}
+
+  footer{border-top:1px solid var(--line); padding:44px 0 60px}
+  .foot{display:flex; justify-content:space-between; gap:26px; flex-wrap:wrap; align-items:flex-start}
+  .foot .brand img{height:30px}
+  .foot .small{font-family:var(--mono); font-size:11px; letter-spacing:.04em; color:var(--dim); margin-top:14px; line-height:1.7}
+  .foot nav{display:flex; gap:22px; flex-wrap:wrap; font-size:14px; color:var(--muted)}
+  .foot nav a:hover{color:var(--mint)}
+
+  /* preview control (temporary, removed for launch) */
+  .pc{position:fixed; z-index:80; left:50%; bottom:16px; transform:translateX(-50%); display:flex; gap:16px; align-items:center; padding:9px 14px; border-radius:14px; background:rgba(9,24,20,.94); border:1px solid var(--lineB); backdrop-filter:blur(10px); box-shadow:0 12px 40px rgba(0,0,0,.5); font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:#9AB1AA}
+  .pc .grp{display:flex; align-items:center; gap:7px}
+  .pc b{color:#83998F; font-weight:400}
+  .pc button{font-family:var(--mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:5px 10px; border-radius:8px; border:1px solid rgba(77,245,192,.3); background:transparent; color:#F2FBF7; cursor:pointer}
+  .pc button.on{background:#24E6AE; color:#020806; border-color:transparent}
+  .pc .tag{color:#83998F}
+
+  @media (max-width:880px){
+    .navlinks{display:none}
+    .hero-grid{grid-template-columns:1fr; gap:26px}
+    .hero .phone{display:none}
+    .steps{grid-template-columns:1fr}
+    .feature,.feature.rev{grid-template-columns:1fr; gap:26px; text-align:center}
+    .feature.rev .phone,.feature .phone{order:0}
+    .figures{justify-content:center}
+    .get-row{justify-content:center}
+    .pc{flex-direction:column; gap:6px; bottom:10px}
+  }
+  @media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important} }
+</style>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top"><img src="pmark.png" alt=""><span>Paparazzi On Demand</span></a>
+    <nav class="navlinks"><a href="#how">How it works</a><a href="#paparazzi">For Paparazzi</a><a href="#shop">Shop</a></nav>
+    <a class="btn btn-mint" href="#get">Get the app</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="wrap hero-grid">
+      <div>
+        <img class="wm wm-dark" src="wordmark.png" alt="Paparazzi On Demand">
+        <img class="wm wm-light" src="wordmark-light.png" alt="Paparazzi On Demand">
+        <p class="tagline">Capture the moment.</p>
+        <p class="lead">Be the <b>Seeker</b> and get your pics. Be the <b>Paparazzi</b> and get paid. Real photos of you in the moment, taken by someone else, never a selfie.</p>
+        <p class="beats">Get pics <span class="d"></span> Take pics <span class="d"></span> Get paid</p>
+        <div class="get" id="get">
+          <span class="get-label">Download free</span>
+          <div class="get-row">
+            <a class="pbtn cta-ios" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.365 1.43c0 1.14-.42 2.2-1.13 2.99-.79.87-2.08 1.54-3.19 1.45-.14-1.1.42-2.27 1.1-3.02.77-.85 2.1-1.48 3.22-1.42zM20.9 17.14c-.55 1.27-.82 1.84-1.53 2.96-.99 1.56-2.39 3.5-4.12 3.51-1.54.02-1.94-1-4.03-.99-2.09.01-2.53 1.01-4.07.99-1.73-.02-3.05-1.77-4.04-3.33-2.77-4.37-3.06-9.5-1.35-12.22 1.21-1.93 3.13-3.06 4.93-3.06 1.84 0 2.99 1.01 4.51 1.01 1.47 0 2.37-1.01 4.5-1.01 1.61 0 3.32.88 4.53 2.4-3.98 2.18-3.33 7.86.79 9.73z"/></svg>iOS</a>
+            <a class="pbtn cta-android" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.6 9.48l1.84-3.18a.4.4 0 0 0-.7-.4l-1.86 3.23a11.4 11.4 0 0 0-9.76 0L5.26 5.9a.4.4 0 1 0-.7.4L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>Android</a>
+          </div>
+        </div>
+        <p class="free-note">Pay only for the shots you keep, from <b>$0.99</b></p>
+      </div>
+      <div class="phone"><div class="scr">
+        <img class="s-dark" src="screen-live.jpg" alt="The home screen: a Seeker set to Visible on the glowing map." loading="lazy">
+        <img class="s-light" src="screen-live-light.jpg" alt="The home screen in light mode." loading="lazy">
+      </div></div>
+    </div>
+  </section>
+
+  <div class="trust">
+    <div class="wrap">
+      <span><b>Their visibility is their consent</b></span>
+      <span>Your face never shows on the map</span>
+      <span>You approve every shot</span>
+    </div>
+  </div>
+
+  <section class="block wrap" id="how">
+    <div class="sec-head"><span class="eyebrow">How it works</span><h2>From out-and-about to your best shot, in three taps.</h2></div>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h3>Go visible</h3><p>Tap once to become discoverable as a Seeker. Your face never shows on the map. A Paparazzi only sees you once they're close.</p></div>
+      <div class="step"><div class="n">2</div><h3>Get the shot</h3><p>Paparazzi see your photo request and capture the moment. No posing, no selfies. Just you, out living it.</p></div>
+      <div class="step"><div class="n">3</div><h3>Ready for your close-up</h3><p>Review every frame. Keep only the shots you love, from $0.99. POD keeps no copy once you've passed.</p></div>
+    </div>
+  </section>
+
+  <section class="flip block"><div class="wrap"><h2>Flip the lens,<br>flip the script.</h2><p>Be the Seeker or be the Paparazzi. Get pics, take pics, get paid. Switch sides anytime.</p></div></section>
+
+  <section class="block wrap" id="paparazzi">
+    <div class="feature">
+      <div>
+        <span class="eyebrow">For Paparazzi</span>
+        <h2 class="sec-head" style="margin:14px 0 0">Take pics? Get paid.</h2>
+        <p style="color:var(--muted); font-size:17px; max-width:44ch; margin:16px 0 0">Shoot the people who asked to be seen. Keep the majority of every sale, and move your earnings to your debit card in minutes. Waiting for a free bank deposit is always there too.</p>
+        <div class="figures"><div class="fig"><div class="num">60%</div><div class="lab">you keep on every shot sold</div></div><div class="fig"><div class="num">~30<span style="font-size:.5em"> min</span></div><div class="lab">instant cash-out to your debit card</div></div></div>
+      </div>
+      <div class="phone"><div class="scr">
+        <img class="s-dark" src="screen-earn.jpg" alt="The earnings screen: lifetime earnings, a Cash out button, and a list of purchased shots." loading="lazy">
+        <img class="s-light" src="screen-earn-light.jpg" alt="The earnings screen in light mode." loading="lazy">
+      </div></div>
+    </div>
+  </section>
+
+  <section class="block wrap">
+    <div class="feature rev">
+      <div class="phone"><div class="scr">
+        <img class="s-dark" src="screen-close-dark.jpg" alt="The request screen: a Seeker's selfie framed as their close-up, dark mode." loading="lazy">
+        <img class="s-light" src="screen-close.jpg" alt="The request screen: a Seeker's selfie framed as their close-up." loading="lazy">
+      </div></div>
+      <div>
+        <span class="eyebrow">For Seekers</span>
+        <h2 class="sec-head" style="margin:14px 0 0">Always get your good side.</h2>
+        <p style="color:var(--muted); font-size:17px; max-width:44ch; margin:16px 0 0">You're the star. They're the Paparazzi. Request pics, add a private note so they can spot you, then keep only your best angles. Your selfie is your close-up, and it never shows on the map.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block wrap" id="shop">
+    <div class="shop-band">
+      <div><span class="eyebrow">Merch</span><h2 class="sec-head" style="margin:12px 0 6px; font-size:28px">Wear the moment.</h2><p style="color:var(--muted); margin:0; max-width:44ch">POD caps, tees and film-inspired pieces are on the way.</p></div>
+      <span class="btn btn-ghost" aria-disabled="true">Shop, coming soon</span>
+    </div>
+  </section>
+
+  <section class="final wrap">
+    <h2>Capture the moment.</h2>
+    <div class="get">
+      <span class="get-label">Download free</span>
+      <div class="get-row" style="justify-content:center">
+        <a class="pbtn cta-ios" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.365 1.43c0 1.14-.42 2.2-1.13 2.99-.79.87-2.08 1.54-3.19 1.45-.14-1.1.42-2.27 1.1-3.02.77-.85 2.1-1.48 3.22-1.42zM20.9 17.14c-.55 1.27-.82 1.84-1.53 2.96-.99 1.56-2.39 3.5-4.12 3.51-1.54.02-1.94-1-4.03-.99-2.09.01-2.53 1.01-4.07.99-1.73-.02-3.05-1.77-4.04-3.33-2.77-4.37-3.06-9.5-1.35-12.22 1.21-1.93 3.13-3.06 4.93-3.06 1.84 0 2.99 1.01 4.51 1.01 1.47 0 2.37-1.01 4.5-1.01 1.61 0 3.32.88 4.53 2.4-3.98 2.18-3.33 7.86.79 9.73z"/></svg>iOS</a>
+        <a class="pbtn cta-android" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.6 9.48l1.84-3.18a.4.4 0 0 0-.7-.4l-1.86 3.23a11.4 11.4 0 0 0-9.76 0L5.26 5.9a.4.4 0 1 0-.7.4L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>Android</a>
+      </div>
+      <div class="qr-wrap" style="justify-content:center; margin-top:8px"><div class="qr-tile"><div id="qr"></div></div><span class="scanhint">or scan to install<br>on your phone</span></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div><a class="brand" href="#top"><img src="pmark.png" alt=""><span>Paparazzi On Demand</span></a><div class="small">Capture the moment.<br>&copy; <span id="yr"></span> Paparazzi On Demand</div></div>
+    <nav><a href="#" data-legal="Privacy">Privacy</a><a href="#" data-legal="Terms">Terms</a><a href="mailto:support@paparazzionondemand.com">Support</a><a href="mailto:hello@paparazzionondemand.com">hello@paparazzionondemand.com</a></nav>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  var IOS_URL="https://testflight.apple.com/join/FVnK2cuJ";
+  var ANDROID_URL="https://expo.dev/artifacts/eas/t8m9FNloCspfT0UkOufmQORKwOZjyDMzrxMKPkVUbE0.apk";
+  var ua=navigator.userAgent||"", isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1), isAndroid=/Android/.test(ua);
+  document.querySelectorAll("a.cta-ios").forEach(function(a){a.href=IOS_URL;});
+  document.querySelectorAll("a.cta-android").forEach(function(a){a.href=ANDROID_URL;});
+  document.querySelectorAll(isAndroid?"a.cta-android":"a.cta-ios").forEach(function(a){a.classList.add("on");});
+
+  try{ var ref=new URLSearchParams(location.search).get("ref"); if(ref){ localStorage.setItem("pod_ref", ref.slice(0,64)); } }catch(e){}
+  try{ var target=(location.protocol.indexOf("http")===0)?location.href:"https://paparazzionondemand.com/"; new QRCode(document.getElementById("qr"),{text:target,width:104,height:104,colorDark:"#020806",colorLight:"#F2FBF7",correctLevel:QRCode.CorrectLevel.M}); }catch(e){}
+  document.getElementById("yr").textContent=new Date().getFullYear();
+  document.querySelectorAll("[data-legal]").forEach(function(a){a.addEventListener("click",function(ev){ev.preventDefault();alert("The "+a.dataset.legal+" page goes live with the app-store submission.");});});
+</script>
