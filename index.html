@@ -76,6 +76,10 @@
   .s-light{display:none}
   :root[data-screens="light"] .s-dark{display:none}
   :root[data-screens="light"] .s-light{display:block}
+  /* the live "Who are you tonight?" camera (tonight/) is layered over the still once it loads;
+     the still stays underneath as the no-JS / slow-network fallback */
+  .scr iframe{position:absolute; inset:0; width:100%; height:100%; border:0; display:block; background:transparent; opacity:0; transition:opacity .45s ease}
+  .scr iframe.on{opacity:1}
 
   .trust{border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:var(--night2)}
   .trust .wrap{display:flex; flex-wrap:wrap; gap:12px 34px; padding:18px 24px; font-family:var(--mono); font-size:11.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--dim); align-items:center}
@@ -188,9 +192,23 @@
         </div>
       </div>
       <div class="phone"><div class="scr">
-        <img class="s-dark" src="screen-live.jpg" alt="The home screen: a Seeker set to Visible on the glowing map." loading="lazy">
-        <img class="s-light" src="screen-live-light.jpg" alt="The home screen in light mode." loading="lazy">
+        <!-- Hero = the "Who are you tonight?" front door (Paparazzi side), EF 2026-09-22. It is dark-branded in the app regardless of theme, so both theme slots use the same still. -->
+        <img class="s-dark" src="screen-tonight.jpg" alt="The Who are you tonight? screen: a floating camera under a spotlight, seen from behind the lens. Flip the lens, flip the script." loading="eager" fetchpriority="high">
+        <img class="s-light" src="screen-tonight.jpg" alt="The Who are you tonight? screen: a floating camera under a spotlight, seen from behind the lens." loading="eager">
       </div></div>
+      <script>
+      // Hero camera: the real swipe-to-turn screen from the app (tonight/index.html), added only
+      // once the phone nears the viewport so phones on slow data are not charged for it up front.
+      (function(){
+        var scr=document.querySelector('.hero .scr'); if(!scr||!('IntersectionObserver' in window))return;
+        var io=new IntersectionObserver(function(es){es.forEach(function(e){ if(!e.isIntersecting)return; io.disconnect();
+          var f=document.createElement('iframe'); f.src='tonight/'; f.title='Who are you tonight? Swipe or tap the camera to flip the lens.'; f.setAttribute('scrolling','no'); f.setAttribute('loading','eager');
+          f.addEventListener('load',function(){ f.classList.add('on'); });
+          scr.appendChild(f);
+        });},{rootMargin:'320px 0px'});
+        io.observe(scr);
+      })();
+      </script>
     </div>
   </section>
 
