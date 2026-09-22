@@ -76,10 +76,6 @@
   .s-light{display:none}
   :root[data-screens="light"] .s-dark{display:none}
   :root[data-screens="light"] .s-light{display:block}
-  /* the live "Who are you tonight?" camera (tonight/) is layered over the still once it loads;
-     the still stays underneath as the no-JS / slow-network fallback */
-  .scr iframe{position:absolute; inset:0; width:100%; height:100%; border:0; display:block; background:transparent; opacity:0; transition:opacity .45s ease}
-  .scr iframe.on{opacity:1}
 
   .trust{border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:var(--night2)}
   .trust .wrap{display:flex; flex-wrap:wrap; gap:12px 34px; padding:18px 24px; font-family:var(--mono); font-size:11.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--dim); align-items:center}
@@ -163,6 +159,60 @@
     .pc{flex-direction:column; gap:6px; bottom:10px}
   }
   @media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important} }
+
+  /* ===== scroll-scrub camera hero (EF direction 2026-09-22) ===== */
+  .flip-sec{position:relative; height:230svh}
+  /* opaque ink ground on the pin: position:sticky forms a stacking context that isolates the art's
+     lighten blend (the "box edge" trap); an opaque same-color ground resolves it locally. pin sits
+     under the sticky header (--hh, set by JS) so the turn answers the FIRST pixel of scroll. */
+  .flip-pin{position:sticky; top:var(--hh,70px); height:calc(100svh - var(--hh,70px)); overflow:clip; display:flex; align-items:center; background:var(--ink)}
+  .hero-grid{position:relative; z-index:auto; display:grid; grid-template-columns:1.05fr .95fr; gap:36px; align-items:center; width:100%}
+  .sub{font-family:var(--display); font-size:19px; font-weight:500; color:var(--muted); margin:10px 0 0}
+  .sub b{color:var(--bone); font-weight:600}
+  .hero-get{margin-top:26px}
+  .cam-block{justify-self:center; width:min(460px,100%); position:relative; text-align:center}
+  .stage{position:relative; aspect-ratio:354/300; cursor:pointer}
+  .stage img,.stage canvas{position:absolute; left:3.39%; top:-17.5%; width:93.22%; height:121.17%; pointer-events:none; -webkit-user-drag:none}
+  .stage .cam,.stage canvas{mix-blend-mode:lighten}
+  .beam{position:absolute; left:50%; top:-100%; width:96%; height:186.7%; transform:translateX(-50%); pointer-events:none; opacity:0;
+    background:linear-gradient(180deg,rgba(242,251,247,.075),rgba(242,251,247,.03) 55%,transparent 100%);
+    clip-path:polygon(44% 0,56% 0,92% 100%,8% 100%); filter:blur(30px);
+    -webkit-mask-image:linear-gradient(180deg,#000 0,#000 64%,transparent 78%); mask-image:linear-gradient(180deg,#000 0,#000 64%,transparent 78%)}
+  .halo{position:absolute; left:50%; top:50%; width:101.7%; height:100%; transform:translate(-50%,-50%); pointer-events:none; opacity:0;
+    background:radial-gradient(50% 50% at 50% 50%,rgba(36,230,174,.13),transparent 70%)}
+  .cap{margin-top:12px; position:relative}
+  .cap .side{transition:none}
+  .cap .side.pap{position:absolute; inset:0}
+  .cap .eyebrow{font-size:10.5px; letter-spacing:.24em}
+  .cap .side.pap .eyebrow{color:#FFAD58}
+  .cap .role{font-family:var(--impact); text-transform:uppercase; font-size:32px; line-height:1; letter-spacing:.01em; color:var(--bone); margin:8px 0 6px}
+  .cap .body{font-size:14px; color:rgba(242,251,247,.78); margin:0}
+  .hint{display:flex; align-items:center; justify-content:center; gap:8px; color:var(--dim); font-size:12.5px; margin-top:12px}
+  .hint svg{width:16px; height:16px; stroke:var(--mint); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
+  .intro-strip{padding:44px 0 52px}
+  .intro-strip .lead{margin:0 auto 18px; text-align:center; max-width:52ch}
+  .intro-strip .beats{justify-content:center; margin:0}
+  @media (max-width:760px){
+    .flip-sec{height:220svh}
+    .hero-grid{display:flex; flex-direction:column; align-items:center; text-align:center; gap:0}
+    .hero-grid > div:first-child{display:contents}
+    .wm{order:1; width:min(240px,66%); margin:0 0 2px}
+    .tagline{order:2; margin:14px 0 0; font-size:clamp(26px,7.4vw,34px)}
+    .sub{order:3; margin:6px 0 0; font-size:16px}
+    .cam-block{order:4; width:min(378px,100%,60svh); margin:0}
+    .hero-get{order:5; margin-top:14px}
+    .hero-get .get-row{justify-content:center}
+    .hero-get .get-label{display:block; text-align:center; margin-bottom:10px}
+  }
+  @media (max-height:730px) and (max-width:760px){
+    .cap .role{font-size:26px}
+    .cam-block{width:min(320px,100%)}
+    .wm{width:min(200px,56%)}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .flip-sec{height:auto}
+    .flip-pin{position:relative; height:auto; padding:48px 0}
+  }
 </style>
 
 <header>
@@ -174,41 +224,52 @@
 </header>
 
 <main id="top">
-  <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="wrap hero-grid">
+  <section class="flip-sec" id="flip">
+    <div class="flip-pin">
+    <div class="wrap hero-grid" id="hero">
       <div>
         <img class="wm wm-dark" src="wordmark.png" alt="Paparazzi On Demand">
         <img class="wm wm-light" src="wordmark-light.png" alt="Paparazzi On Demand">
         <p class="tagline">Capture the moment.</p>
-        <p class="lead">Be the <b>Seeker</b> and get your pics. Be the <b>Paparazzi</b> and get paid. Real photos of you in the moment, taken by someone else. Say goodbye to the selfie.</p>
-        <p class="beats">Get pics <span class="d"></span> Take pics <span class="d"></span> Get paid</p>
-        <div class="get" id="get">
+        <p class="sub">Flip the lens, <b>flip the script.</b></p>
+        <div class="get hero-get" id="get">
           <span class="get-label">Download free</span>
           <div class="get-row">
-            <a class="pbtn cta-ios" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.365 1.43c0 1.14-.42 2.2-1.13 2.99-.79.87-2.08 1.54-3.19 1.45-.14-1.1.42-2.27 1.1-3.02.77-.85 2.1-1.48 3.22-1.42zM20.9 17.14c-.55 1.27-.82 1.84-1.53 2.96-.99 1.56-2.39 3.5-4.12 3.51-1.54.02-1.94-1-4.03-.99-2.09.01-2.53 1.01-4.07.99-1.73-.02-3.05-1.77-4.04-3.33-2.77-4.37-3.06-9.5-1.35-12.22 1.21-1.93 3.13-3.06 4.93-3.06 1.84 0 2.99 1.01 4.51 1.01 1.47 0 2.37-1.01 4.5-1.01 1.61 0 3.32.88 4.53 2.4-3.98 2.18-3.33 7.86.79 9.73z"/></svg>iOS</a>
-            <a class="pbtn cta-android" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.6 9.48l1.84-3.18a.4.4 0 0 0-.7-.4l-1.86 3.23a11.4 11.4 0 0 0-9.76 0L5.26 5.9a.4.4 0 1 0-.7.4L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>Android</a>
+            <a class="pbtn cta-ios" href="#"><svg viewBox="0 0 24 24" aria-hidden="true" style="width:19px;height:19px;fill:currentColor"><path d="M16.365 1.43c0 1.14-.42 2.2-1.13 2.99-.79.87-2.08 1.54-3.19 1.45-.14-1.1.42-2.27 1.1-3.02.77-.85 2.1-1.48 3.22-1.42zM20.9 17.14c-.55 1.27-.82 1.84-1.53 2.96-.99 1.56-2.39 3.5-4.12 3.51-1.54.02-1.94-1-4.03-.99-2.09.01-2.53 1.01-4.07.99-1.73-.02-3.05-1.77-4.04-3.33-2.77-4.37-3.06-9.5-1.35-12.22 1.21-1.93 3.13-3.06 4.93-3.06 1.84 0 2.99 1.01 4.51 1.01 1.47 0 2.37-1.01 4.5-1.01 1.61 0 3.32.88 4.53 2.4-3.98 2.18-3.33 7.86.79 9.73z"/></svg>iOS</a>
+            <a class="pbtn cta-android" href="#"><svg viewBox="0 0 24 24" aria-hidden="true" style="width:19px;height:19px;fill:currentColor"><path d="M17.6 9.48l1.84-3.18a.4.4 0 0 0-.7-.4l-1.86 3.23a11.4 11.4 0 0 0-9.76 0L5.26 5.9a.4.4 0 1 0-.7.4L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>Android</a>
           </div>
         </div>
       </div>
-      <div class="phone"><div class="scr">
-        <!-- Hero = the "Who are you tonight?" front door (Paparazzi side), EF 2026-09-22. It is dark-branded in the app regardless of theme, so both theme slots use the same still. -->
-        <img class="s-dark" src="screen-tonight.jpg" alt="The Who are you tonight? screen: a floating camera under a spotlight, seen from behind the lens. Flip the lens, flip the script." loading="eager" fetchpriority="high">
-        <img class="s-light" src="screen-tonight.jpg" alt="The Who are you tonight? screen: a floating camera under a spotlight, seen from behind the lens." loading="eager">
-      </div></div>
-      <script>
-      // Hero camera: the real swipe-to-turn screen from the app (tonight/index.html), added only
-      // once the phone nears the viewport so phones on slow data are not charged for it up front.
-      (function(){
-        var scr=document.querySelector('.hero .scr'); if(!scr||!('IntersectionObserver' in window))return;
-        var io=new IntersectionObserver(function(es){es.forEach(function(e){ if(!e.isIntersecting)return; io.disconnect();
-          var f=document.createElement('iframe'); f.src='tonight/'; f.title='Who are you tonight? Swipe or tap the camera to flip the lens.'; f.setAttribute('scrolling','no'); f.setAttribute('loading','eager');
-          f.addEventListener('load',function(){ f.classList.add('on'); });
-          scr.appendChild(f);
-        });},{rootMargin:'320px 0px'});
-        io.observe(scr);
-      })();
-      </script>
+      <div class="cam-block">
+        <div class="stage" id="stage" role="img" aria-label="A camera that turns as you scroll: the lens on you, then you behind it.">
+          <div class="beam" id="beam"></div><div class="halo" id="halo"></div>
+          <img class="blk front" id="blkF" src="tonight/flipcam-block-front.png" alt="">
+          <img class="blk back" id="blkB" src="tonight/flipcam-block-back.png" alt="" style="opacity:0">
+          <canvas id="turn" width="528" height="582" style="opacity:0"></canvas>
+          <img class="cam front" id="camF" src="tonight/flipcam-float-front-soft4.png" alt="">
+          <img class="cam back" id="camB" src="tonight/flipcam-float-back-soft3-lcddim.png" alt="" style="opacity:0">
+        </div>
+        <div class="cap" id="cap">
+          <div class="side seek" id="capSeek">
+            <span class="eyebrow">Seeker</span>
+            <div class="role">In front<br>of the lens</div>
+            <p class="body">Get seen. Get your pics.</p>
+          </div>
+          <div class="side pap" id="capPap" style="opacity:0">
+            <span class="eyebrow">Paparazzi</span>
+            <div class="role">Behind<br>the lens</div>
+            <p class="body">Take pics. Get paid.</p>
+          </div>
+          <div class="hint"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15.5-6.3M21 12a9 9 0 0 1-15.5 6.3"/><path d="M18 2v4h-4M6 22v-4h4"/></svg><span id="hintText">Scroll to flip the lens</span></div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </section>
+  <section class="intro-strip">
+    <div class="wrap">
+      <p class="lead">Be the <b>Seeker</b> and get your pics. Be the <b>Paparazzi</b> and get paid. Real photos of you in the moment, taken by someone else. Say goodbye to the selfie.</p>
+      <p class="beats">Get pics <span class="d"></span> Take pics <span class="d"></span> Get paid</p>
     </div>
   </section>
 
@@ -227,12 +288,26 @@
     </div>
   </section>
 
+  <section class="block map-sec">
+    <div class="wrap feature">
+      <div>
+        <span class="eyebrow">Your side of the game</span>
+        <h2>The map shows who wants a photo, never who they are.</h2>
+        <p>Seekers glow as dots. Paparazzi see the request, not the face, until they're close enough to take the shot. Pick a side; the map is your side of the game.</p>
+      </div>
+      <div class="phone"><div class="scr">
+        <img class="s-dark" src="screen-live.jpg" alt="The home screen: a Seeker set to Visible on the glowing map." loading="lazy">
+        <img class="s-light" src="screen-live-light.jpg" alt="The home screen in light mode." loading="lazy">
+      </div></div>
+    </div>
+  </section>
+
   <section class="block wrap" id="how">
     <div class="sec-head"><span class="eyebrow">How it works</span><h2>From out-and-about to your best shot, in three taps.</h2></div>
     <div class="steps">
       <div class="step"><div class="step-body"><div class="n">1</div><h3>Go visible</h3><p>Tap once to become discoverable as a Seeker. Your face never shows on the map. A Paparazzi only sees you once they're close.</p></div><div class="step-art"><img src="icon-visible.png" alt="" loading="lazy"></div></div>
-      <div class="step"><div class="step-body"><div class="n">2</div><h3>Get the shot</h3><p>Paparazzi see your photo request and capture the moment. No posing, no selfies. Just you, out living it.</p></div><div class="step-art"><img src="icon-shot.png" alt="" loading="lazy"></div></div>
-      <div class="step"><div class="step-body"><div class="n">3</div><h3>Ready for your close-up</h3><p>Review every frame. Keep only the shots you love. POD keeps no copy once you've passed.</p></div><div class="step-art"><img src="icon-closeup.png" alt="" loading="lazy"></div></div>
+      <div class="step"><div class="step-body"><div class="n">2</div><h3>Ready for your close-up</h3><p>Paparazzi see your photo request and capture the moment. No posing, no selfies. Just you, in your element.</p></div><div class="step-art"><img src="icon-shot.png" alt="" loading="lazy"></div></div>
+      <div class="step"><div class="step-body"><div class="n">3</div><h3>Motion activated</h3><p>Keep the shots you love, post the ones you want. That's motion. POD keeps no copy once you're done.</p></div><div class="step-art"><img src="icon-closeup.png" alt="" loading="lazy"></div></div>
     </div>
   </section>
 
@@ -308,3 +383,72 @@
   document.getElementById("yr").textContent=new Date().getFullYear();
   document.querySelectorAll("[data-legal]").forEach(function(a){a.addEventListener("click",function(ev){ev.preventDefault();alert("The "+a.dataset.legal+" page goes live with the app-store submission.");});});
 </script>
+
+<script>
+(function(){
+  // Scroll-scrub camera turn. Choreography numbers are verbatim from the app's approved prototype
+  // (paparazzi-v6/_design/who_are_you_tonight/flip-mock-v25-motion-h3.html render()).
+  var sec=document.getElementById('flip'), pin=sec.querySelector('.flip-pin');
+  var el={camF:document.getElementById('camF'),camB:document.getElementById('camB'),
+          blkF:document.getElementById('blkF'),blkB:document.getElementById('blkB'),
+          beam:document.getElementById('beam'),halo:document.getElementById('halo'),
+          seek:document.getElementById('capSeek'),pap:document.getElementById('capPap'),
+          cv:document.getElementById('turn')};
+  var ctx=el.cv.getContext('2d');
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function c(x){return x<0?0:x>1?1:x} function sm(x){x=c(x);return x*x*(3-2*x)}
+  var N=44,imgs=[],loaded=0,ready=false,lastFi=-1;
+  for(var k=0;k<N;k++){(function(k){var im=new Image(); im.onload=function(){if(++loaded===N){ready=true; document.body.setAttribute('data-frames','ready'); paint(p);}};
+    im.src='tonight/turn2k/f'+(k<10?'0':'')+k+'.webp'; imgs[k]=im;})(k);}
+  var p=0, forced=null;
+  var q=new URLSearchParams(location.search); if(q.get('p')!==null) forced=c(parseFloat(q.get('p')));
+  var header=document.querySelector('header');
+  function setHH(){document.documentElement.style.setProperty('--hh',(header?header.offsetHeight:70)+'px');}
+  setHH(); addEventListener('resize',setHH);
+  function progress(){
+    if(forced!==null) return forced;
+    var travel=sec.offsetHeight-pin.offsetHeight;
+    if(travel<=0) return 0;
+    var origin=header?header.getBoundingClientRect().bottom:0;
+    return c((origin-sec.getBoundingClientRect().top)/travel);
+  }
+  function paint(pp){
+    p=pp;
+    if(ready){
+      var fi=Math.round(c((p-0.04)/0.92)*(N-1));
+      if(fi!==lastFi){ctx.clearRect(0,0,528,582); ctx.drawImage(imgs[fi],0,0); lastFi=fi;}
+      el.cv.style.opacity=Math.min(sm(p/0.04),sm((1-p)/0.04));
+      el.camF.style.opacity=1-sm(p/0.08);
+      el.blkF.style.opacity=1-sm((p-0.06)/0.06);
+      el.camB.style.opacity=sm((p-0.92)/0.08);
+      el.blkB.style.opacity=sm((p-0.86)/0.06);
+      var light=sm((p-0.88)/0.12); el.beam.style.opacity=light; el.halo.style.opacity=light;
+    }else{
+      el.cv.style.opacity=0;
+      el.camF.style.opacity=1-sm((p-0.05)/0.40); el.camB.style.opacity=sm((p-0.55)/0.40);
+      el.blkF.style.opacity=1-c((p-0.45)/0.10);  el.blkB.style.opacity=c((p-0.45)/0.10);
+      var l2=sm((p-0.35)/0.60); el.beam.style.opacity=l2; el.halo.style.opacity=l2;
+    }
+    var a=1-c(p/0.35), b=c((p-0.65)/0.35);
+    el.seek.style.opacity=a; el.pap.style.opacity=b;
+    el.seek.style.transform=a<1?'translateY('+(6*(1-a)).toFixed(2)+'px)':'';
+    el.pap.style.transform=b<1?'translateY('+(6*(1-b)).toFixed(2)+'px)':'';
+    document.body.setAttribute('data-p',p.toFixed(3));
+  }
+  window.__scrub={set:function(x){paint(c(x));},sync:function(){paint(progress());},progress:progress};
+  if(reduce||forced!==null){ paint(forced||0); }
+  else{
+    var raf=0;
+    function onScroll(){ if(!raf) raf=requestAnimationFrame(function(){raf=0; paint(progress());}); }
+    addEventListener('scroll',onScroll,{passive:true});
+    addEventListener('resize',onScroll);
+    paint(progress());
+    document.getElementById('stage').addEventListener('click',function(){
+      var travel=sec.offsetHeight-pin.offsetHeight;
+      var top=sec.getBoundingClientRect().top+scrollY;
+      scrollTo({top: p<0.5 ? top+travel : top, behavior:'smooth'});
+    });
+  }
+})();
+</script>
+
