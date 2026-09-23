@@ -172,7 +172,8 @@
   .sub b{color:var(--bone); font-weight:600}
   .hero-get{margin-top:26px}
   .cam-block{justify-self:center; width:min(460px,100%); position:relative; text-align:center}
-  .stage{position:relative; aspect-ratio:354/300; cursor:pointer}
+  /* no tap-highlight box / long-press selection when tapping the camera to flip it (EF 2026-09-23) */
+  .stage{position:relative; aspect-ratio:354/300; cursor:pointer; -webkit-tap-highlight-color:transparent; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none}
   .stage img,.stage canvas{position:absolute; left:3.39%; top:-17.5%; width:93.22%; height:121.17%; pointer-events:none; -webkit-user-drag:none}
   .stage .cam,.stage canvas{mix-blend-mode:lighten}
   .beam{position:absolute; left:50%; top:-100%; width:96%; height:186.7%; transform:translateX(-50%); pointer-events:none; opacity:0;
