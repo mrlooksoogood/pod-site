@@ -161,7 +161,8 @@
   @media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important} }
 
   /* ===== scroll-scrub camera hero (EF direction 2026-09-22) ===== */
-  .flip-sec{position:relative; height:230svh}
+  /* 230svh of turn + 45svh of HOLD on the finished back view before the page moves on (EF 2026-09-23) */
+  .flip-sec{position:relative; height:275svh}
   /* opaque ink ground on the pin: position:sticky forms a stacking context that isolates the art's
      lighten blend (the "box edge" trap); an opaque same-color ground resolves it locally. pin sits
      under the sticky header (--hh, set by JS) so the turn answers the FIRST pixel of scroll. */
@@ -193,7 +194,7 @@
   .intro-strip .lead{margin:0 auto 18px; text-align:center; max-width:52ch}
   .intro-strip .beats{justify-content:center; margin:0}
   @media (max-width:760px){
-    .flip-sec{height:220svh}
+    .flip-sec{height:265svh}
     .hero-grid{display:flex; flex-direction:column; align-items:center; text-align:center; gap:0}
     .hero-grid > div:first-child{display:contents}
     .wm{order:1; width:min(240px,66%); margin:0 0 2px}
@@ -209,6 +210,12 @@
     .cam-block{width:min(320px,100%)}
     .wm{width:min(200px,56%)}
   }
+  /* phones too short for the whole hero: the wordmark steps aside (the header already carries the
+     brand) and JS sizes the camera so nothing is clipped under the header or below the fold */
+  .hero-grid.tight .wm{display:none}
+  .hero-grid.tight .tagline{margin-top:0}
+  .hero-grid.tight .hint{margin-top:8px}
+  .hero-grid.tight .hero-get{margin-top:10px}
   @media (prefers-reduced-motion:reduce){
     .flip-sec{height:auto}
     .flip-pin{position:relative; height:auto; padding:48px 0}
@@ -405,13 +412,32 @@
   var header=document.querySelector('header');
   function setHH(){document.documentElement.style.setProperty('--hh',(header?header.offsetHeight:70)+'px');}
   setHH(); addEventListener('resize',setHH);
+  // The turn plays over the first part of the scroll; the last HOLD_VH of travel holds the finished
+  // back view so it can settle before the page moves on (EF 2026-09-23: "scroll up happens too quickly").
+  var HOLD_VH=0.45;
   function progress(){
     if(forced!==null) return forced;
     var travel=sec.offsetHeight-pin.offsetHeight;
     if(travel<=0) return 0;
     var origin=header?header.getBoundingClientRect().bottom:0;
-    return c((origin-sec.getBoundingClientRect().top)/travel);
+    var turn=Math.max(1,travel-HOLD_VH*innerHeight);
+    return c((origin-sec.getBoundingClientRect().top)/turn);
   }
+  // Phones: the pinned hero must fit the visible screen (EF 2026-09-23: text clipped on iOS).
+  // Shrink the camera first (floor 300px, it is the hero); if still too tall, drop the hero wordmark
+  // (the header already carries the brand) and refit.
+  var grid=document.getElementById('hero'), cam=grid.querySelector('.cam-block');
+  var CAM_MIN=300, CAM_TIGHT_MIN=210, PIN_PAD=20, STAGE_RATIO=354/300;
+  function over(){return grid.offsetHeight-(pin.clientHeight-PIN_PAD)}
+  function shrinkCam(min){var o=over(); if(o>0) cam.style.width=Math.max(min,cam.offsetWidth-o*STAGE_RATIO)+'px';}
+  function fitHero(){
+    cam.style.width=''; grid.classList.remove('tight');
+    if(innerWidth>760 || reduce) return;
+    shrinkCam(CAM_MIN);
+    if(over()>0){grid.classList.add('tight'); cam.style.width=''; shrinkCam(CAM_TIGHT_MIN);}
+  }
+  fitHero(); addEventListener('resize',fitHero); addEventListener('load',fitHero);
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(fitHero);
   function paint(pp){
     p=pp;
     if(ready){
