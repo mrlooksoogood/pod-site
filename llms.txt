@@ -1,0 +1,15 @@
+# Paparazzi On Demand
+
+> Paparazzi On Demand is a free mobile app (iPhone and Android, currently in beta) that connects people who want real photos of themselves with nearby photographers. Be the Seeker and get your pics, or be the Paparazzi and get paid. A Firstclass Media company.
+
+## How it works
+
+- Seekers request a photo; the map shows who wants a photo, never who they are.
+- Nearby Paparazzi accept the request, take the shot, and get paid.
+- Switch sides anytime: get pics, take pics, get paid.
+
+## Links
+
+- [Website](https://paparazziondemand.com/)
+- Support: support@paparazziondemand.com
+- Parent company: [Firstclass Media](https://firstclassmediagroup.com/)
